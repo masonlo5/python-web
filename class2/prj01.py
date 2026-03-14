@@ -11,7 +11,7 @@ def say_fun():
 
 
 def clear_fun():
-    display.config(text="", bg=window.cget('bg'))
+    display.config(text="", bg=window.cget("bg"))
 
 
 #######################建立視窗########################

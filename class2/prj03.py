@@ -1,17 +1,20 @@
 #######################匯入模組#######################
-# import tkinter as tk
 from tkinter import *
+import random
 
 
 #######################定義函數########################
 def say_fun():
-    # 顯示訊息
-    print("Hello, World!")
-    display.config(text="Hello, World!", fg="blue", bg="yellow")
+    fg_COLORS = "#" + "".join([random.choice("0123456789ABCDEF") for j in range(6)])
+    """
+    
+    fg_COLORS = "#"
+    for j in range(6):
+        fg_COLORS += random.choice("0123456789ABCDEF")
+    """
 
-
-def clear_fun():
-    display.config(text="", bg=window.cget('bg'))
+    bg_COLORS = "#" + "".join([random.choice("0123456789ABCDEF") for j in range(6)])
+    display.config(text="Hello, World!", fg=fg_COLORS, bg=bg_COLORS)
 
 
 #######################建立視窗########################
@@ -26,8 +29,6 @@ window.title("我的第一個GUI程式")
 button = Button(window, text="Show screen", command=say_fun)
 # 將按鈕放置在視窗中
 button.pack()
-button2 = Button(window, text="Clear screen", command=clear_fun)
-button2.pack()
 
 #########################建立標籤########################
 # 創建一個標籤，顯示一些文字

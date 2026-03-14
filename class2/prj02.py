@@ -5,14 +5,15 @@ from tkinter import *
 
 #######################定義函數########################
 def say_fun():
-    # 顯示訊息
-    print("Hello, World!")
-    display.config(text="Hello, World!", fg="blue", bg="yellow")
+    global change
+    if change == False:
+        display.config(text="Hello, World!", fg="green", bg="white")
+    else:
+        display.config(text="Hello, World!", fg="red", bg="white")
+    change = not (change)
 
 
-def clear_fun():
-    display.config(text="", bg=window.cget('bg'))
-
+change = False
 
 #######################建立視窗########################
 # 建立主視窗
@@ -26,8 +27,6 @@ window.title("我的第一個GUI程式")
 button = Button(window, text="Show screen", command=say_fun)
 # 將按鈕放置在視窗中
 button.pack()
-button2 = Button(window, text="Clear screen", command=clear_fun)
-button2.pack()
 
 #########################建立標籤########################
 # 創建一個標籤，顯示一些文字
