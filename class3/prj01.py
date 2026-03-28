@@ -21,11 +21,11 @@ canvas = Canvas(window, width=600, height=600, bg="white")
 canvas.pack()
 #######################設定視窗圖片#######################
 # 設定視窗圖示
-window.iconbitmap("crocodile2.ico")
+window.iconbitmap("brawlstar.jpg")
 
 #######################載入圖片#######################
-# img = PhotoImage(file="crocodile2.png")
-image = Image.open("crocodile2.png")
+# img = PhotoImage(file="brawlstar.jpg")
+image = Image.open("brawlstar.jpg")
 # Pil Image 轉換成 Tkinter 可用的圖片格式
 img = ImageTk.PhotoImage(image)
 
