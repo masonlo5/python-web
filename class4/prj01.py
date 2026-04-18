@@ -24,43 +24,22 @@ def move_circle(event):
         canvas.move(circle, 0, 10)
 
 
-# 自動動畫變數
-circle_dx = 5
-circle_dy = 3
-rect_dx = 4
-rect_dy = 2
+def move_rect(event):
+    key = event.keysym
+    print(key)
+    if key == "w" or key == "W":
+        canvas.move(rect, 0, -10)
+    elif key == "s" or key == "S":
+        canvas.move(rect, 0, 10)
+    elif key == "a" or key == "A":
+        canvas.move(rect, -10, 0)
+    elif key == "d" or key == "D":
+        canvas.move(rect, 10, 0)
 
 
-def animate_circle():
-    global circle_dx, circle_dy
-    canvas.move(circle, circle_dx, circle_dy)
-
-    # 獲得圓形座標
-    coords = canvas.coords(circle)
-
-    # 檢查邊界並反彈
-    if coords[0] <= 0 or coords[2] >= 600:
-        circle_dx = -circle_dx
-    if coords[1] <= 0 or coords[3] >= 600:
-        circle_dy = -circle_dy
-
-    window.after(50, animate_circle)
-
-
-def animate_rect():
-    global rect_dx, rect_dy
-    canvas.move(rect, rect_dx, rect_dy)
-
-    # 獲得矩形座標
-    coords = canvas.coords(rect)
-
-    # 檢查邊界並反彈
-    if coords[0] <= 0 or coords[2] >= 600:
-        rect_dx = -rect_dx
-    if coords[1] <= 0 or coords[3] >= 600:
-        rect_dy = -rect_dy
-
-    window.after(50, animate_rect)
+def move_all(event):
+    move_circle(event)
+    move_rect(event)
 
 
 #######################建立視窗########################
@@ -91,9 +70,9 @@ circle = canvas.create_oval(250, 150, 300, 200, fill="red")
 rect = canvas.create_rectangle(220, 400, 340, 430, fill="blue")
 msg = canvas.create_text(300, 100, text="brawlstar", fill="black", font=("Arial", 30))
 
-# 啟動動畫
-animate_circle()
-animate_rect()
+# 綁定鍵盤事件
+canvas.bind_all("<Key>", move_all)
+
 #######################運行應用程式########################
 # 啟動事件循環
 window.mainloop()
