@@ -39,3 +39,23 @@ def say_hello():
 say_hello = gift_wrap(say_hello)
 
 say_hello()
+
+def register_command(name, description):
+    print(f"[登記] command / {name}: {description}")
+
+    def decorator(func):
+        def wrapper():
+            print(f"[執行] command / {name}")
+            func()
+
+        return wrapper
+    
+    return decorator
+
+
+@register_command(name="hello", description="say hello")
+def hello_command():
+    print("hello, I am a command!")
+
+hello_command()
+print("-------------------------------")
