@@ -54,7 +54,7 @@ async def hello(interaction: discord.Interaction):
     await interaction.response.send_message("Hey!")
 
 @tree.command(name="weather", description="查詢指定城市的天氣")
-async def weather(interaction: discord.Interaction, city_name: str):
+async def weather(interaction: discord.Interaction, city: str):
     """輸入 /weather <city_name> 就可以查詢該城市的天氣"""
 
     await interaction.response.defer()  # 告訴 Discord Bot 已經收到指令，正在處理中
@@ -64,6 +64,19 @@ async def weather(interaction: discord.Interaction, city_name: str):
     if not weather_api.api_key:
         await interaction.followup.send("API 金鑰未設定，請聯繫管理員。")
         return
+    
+    try:
+        weather_summary = weather_api.get_weather_summary(city)
+    except (requests.RequestException, ValueError):
+        await interaction.followup.send("無法取得天氣資訊，請稍後再試。")
+        return
+    
+    if weather_summary is None:
+        await interaction.followup.send(f"找不到 {city} 的天氣資訊，請確認城市名稱是否正確。")
+        return
+    
+    embed = build_weather_embed(weather_summary)
+    await interaction.followup.send(embed=embed)
 #######################啟動#######################
 def main():
     bot.run(os.getenv("DC_BOT_TOKEN"))
