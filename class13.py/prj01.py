@@ -3,8 +3,9 @@ import asyncio
 import discord
 import os
 import requests
-from dotenv import load_dotenv #pip install python-dotenv
+from dotenv import load_dotenv  # pip install python-dotenv
 from myfunction.myfunction import WeatherAPI
+
 #######################初始化#######################
 load_dotenv()
 
@@ -16,6 +17,7 @@ intents.message_content = True
 bot = discord.Client(intents=intents)
 tree = discord.app_commands.CommandTree(bot)
 weather_api = WeatherAPI(os.getenv("Weather_API_KEY"))
+
 
 def build_weather_embed(weather_summary):
     """根據天氣摘要資訊建立一個 Discord Embed 物件"""
@@ -35,13 +37,14 @@ def build_weather_embed(weather_summary):
     )
     return embed
 
-def build_forecast_embed(forecast_summary):
+
+def build_forecast_embeds(forecast_summary):
     """根據天氣預報摘要資訊建立一個 Discord Embed 物件"""
     embeds = []
-   
+
     for forecast in forecast_summary:
         embed = discord.Embed(
-            title=f"{forecast['city_name']} 的天氣預報 - {forecast['datetime']}", 
+            title=f"{forecast['city_name']} 的天氣預報 - {forecast['datetime']}",
             description=f"describe :{forecast['description']}",
             color=discord.Color.from_str("0x1E90FF"),
         )
@@ -64,6 +67,7 @@ async def on_ready():
     print(f"{bot.user} 已登入")
     await tree.sync()
 
+
 @bot.event
 async def on_message(message):
     if message.author == bot.user:
@@ -77,6 +81,7 @@ async def on_message(message):
 async def hello(interaction: discord.Interaction):
     await interaction.response.send_message("Hey!")
 
+
 @tree.command(name="weather", description="查詢指定城市的天氣")
 async def weather(interaction: discord.Interaction, city: str, forecast: bool = False):
     """輸入 /weather <city_name> 就可以查詢該城市的天氣"""
@@ -88,26 +93,30 @@ async def weather(interaction: discord.Interaction, city: str, forecast: bool = 
     if not weather_api.api_key:
         await interaction.followup.send("API 金鑰未設定，請聯繫管理員。")
         return
-    
+
     try:
         if not forecast:
-         weather_summary = weather_api.get_weather_summary(city)
-        if weather_summary is None:
-            await interaction.followup.send(f"找不到 {city} 的天氣資訊，請確認城市名稱是否正確。")
+            weather_summary = weather_api.get_weather_summary(city)
+            if weather_summary is None:
+                await interaction.followup.send(
+                    f"找不到 {city} 的天氣資訊，請確認城市名稱是否正確。"
+                )
+                return
+
+            embed = build_weather_embed(weather_summary)
+            await interaction.followup.send(embed=embed)
             return
 
-        
-    
-        embed = build_weather_embed(weather_summary)
-        await interaction.followup.send(embed=embed)
-        return
-    
+        forecast_summary = weather_api.get_forecast_summary(city)
+
     except (requests.RequestException, ValueError):
         await interaction.followup.send("無法取得天氣資訊，請稍後再試。")
         return
 
     if forecast_summary is None:
-        await interaction.followup.send(f"找不到**{city}* 的天氣預報資訊，請確認城市名稱是否正確。")
+        await interaction.followup.send(
+            f"找不到**{city}* 的天氣預報資訊，請確認城市名稱是否正確。"
+        )
         return
 
     embeds = build_forecast_embeds(forecast_summary)
@@ -117,6 +126,7 @@ async def weather(interaction: discord.Interaction, city: str, forecast: bool = 
 #######################啟動#######################
 def main():
     bot.run(os.getenv("DC_BOT_TOKEN"))
+
 
 if __name__ == "__main__":
     main()
